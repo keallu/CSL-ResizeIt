@@ -8,7 +8,6 @@ namespace ResizeIt
     {
         private bool _initialized;
         private bool _expanded;
-        private bool _topped;
 
         private UITabContainer _tsContainer;
         
@@ -16,8 +15,6 @@ namespace ResizeIt
         {
             try
             {
-                _expanded = true;
-
                 if (_tsContainer == null)
                 {
                     _tsContainer = GameObject.Find("TSContainer").GetComponent<UITabContainer>();
@@ -65,6 +62,8 @@ namespace ResizeIt
 
                 if (!_initialized || ModConfig.Instance.ConfigUpdated)
                 {
+                    _expanded = ModConfig.Instance.DefaultMode is "Expanded mode" ? true : false;
+
                     if (_expanded)
                     {
                         Expand();
@@ -78,23 +77,12 @@ namespace ResizeIt
                     ModConfig.Instance.ConfigUpdated = false;
                 }
 
-                if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Space))
+                if (ModConfig.Instance.FastSwitchingEnabled)
                 {
-                    if (_topped)
+                    if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Space))
                     {
-
-                        _topped = false;
+                        ToggleMode();
                     }
-                    else
-                    {
-
-                        _topped = true;
-                    }
-                }
-
-                if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Space))
-                {
-                    ToggleMode();
                 }
             }
             catch (Exception e)
@@ -127,18 +115,6 @@ namespace ResizeIt
             }
         }
 
-        private void CreateExtenderPanel()
-        {
-            try
-            {
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:CreateExtenderPanel -> Exception: " + e.Message);
-            }
-        }
-
         private void ToggleMode()
         {
             try
@@ -164,7 +140,16 @@ namespace ResizeIt
         {
             try
             {
-                UpdateGUI(ModConfig.Instance.RowsExpanded > 0 ? ModConfig.Instance.RowsExpanded : 1, ModConfig.Instance.ColumnsExpanded > 0 ? ModConfig.Instance.ColumnsExpanded : 7);
+                float scaling = ModConfig.Instance.ScalingExpanded > 0f ? ModConfig.Instance.ScalingExpanded : 1f;
+                int rows = ModConfig.Instance.RowsExpanded > 0 ? ModConfig.Instance.RowsExpanded : 1;
+                int columns = ModConfig.Instance.ColumnsExpanded > 0 ? ModConfig.Instance.ColumnsExpanded : 7;
+                bool scrollVertically = ModConfig.Instance.ScrollDirectionExpanded is "Vertically" ? true : false;
+                bool alignmentCentered = ModConfig.Instance.AlignmentExpanded is "Centered" ? true : false;
+                float horizontalOffset = ModConfig.Instance.HorizontalOffsetExpanded != 0f ? ModConfig.Instance.HorizontalOffsetExpanded : 0f;
+                float verticalOffset = ModConfig.Instance.VerticalOffsetExpanded != 0f ? ModConfig.Instance.VerticalOffsetExpanded : 0f;
+                float opacity = ModConfig.Instance.OpacityExpanded > 0f ? ModConfig.Instance.OpacityExpanded : 1f;
+
+                UpdateGUI(scaling, rows, columns, scrollVertically, alignmentCentered, horizontalOffset, verticalOffset, opacity);
             }
             catch (Exception e)
             {
@@ -176,7 +161,16 @@ namespace ResizeIt
         {
             try
             {
-                UpdateGUI(ModConfig.Instance.RowsCompressed > 0 ? ModConfig.Instance.RowsCompressed : 1, ModConfig.Instance.ColumnsCompressed > 0 ? ModConfig.Instance.ColumnsCompressed : 7);
+                float scaling = ModConfig.Instance.ScalingCompressed > 0f ? ModConfig.Instance.ScalingCompressed : 1f;
+                int rows = ModConfig.Instance.RowsCompressed > 0 ? ModConfig.Instance.RowsCompressed : 1;
+                int columns = ModConfig.Instance.ColumnsCompressed > 0 ? ModConfig.Instance.ColumnsCompressed : 7;
+                bool scrollVertically = ModConfig.Instance.ScrollDirectionCompressed is "Vertically" ? true : false;
+                bool alignmentCentered = ModConfig.Instance.AlignmentCompressed is "Centered" ? true : false;
+                float horizontalOffset = ModConfig.Instance.HorizontalOffsetCompressed != 0f ? ModConfig.Instance.HorizontalOffsetCompressed : 0f;
+                float verticalOffset = ModConfig.Instance.VerticalOffsetCompressed != 0f ? ModConfig.Instance.VerticalOffsetCompressed : 0f;
+                float opacity = ModConfig.Instance.OpacityCompressed > 0f ? ModConfig.Instance.OpacityCompressed : 1f;
+
+                UpdateGUI(scaling, rows, columns, scrollVertically, alignmentCentered, horizontalOffset, verticalOffset, opacity);
             }
             catch (Exception e)
             {
@@ -184,17 +178,10 @@ namespace ResizeIt
             }
         }
 
-        private void UpdateGUI(int rows, int columns)
+        private void UpdateGUI(float scaling, int rows, int columns, bool scrollVertically, bool alignmentCentered, float horizontalOffset, float verticalOffset, float opacity)
         {
             try
             {
-                float scaling = ModConfig.Instance.Scaling > 0f ? ModConfig.Instance.Scaling : 1f;
-                bool scrollVertically = ModConfig.Instance.ScrollDirection is "Vertically" ? true : false;
-                bool alignmentCentered = ModConfig.Instance.Alignment is "Centered" ? true : false;
-                float horizontalOffset = ModConfig.Instance.HorizontalOffset != 0f ? ModConfig.Instance.HorizontalOffset : 0f;
-                float verticalOffset = ModConfig.Instance.VerticalOffset != 0f ? ModConfig.Instance.VerticalOffset : 0f;
-                float opacity = ModConfig.Instance.Opacity > 0f ? ModConfig.Instance.Opacity : 1f;
-
                 UITabContainer gtsContainer;
                 UIScrollablePanel scrollablePanel;
                 UIButton button;
