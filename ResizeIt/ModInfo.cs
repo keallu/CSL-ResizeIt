@@ -20,6 +20,18 @@ namespace ResizeIt
             "Compressed mode"
         };
 
+        private static readonly string[] ControlPanelAlignmentLabels =
+        {
+            "Right",
+            "Left"
+        };
+
+        private static readonly string[] ControlPanelAlignmentValues =
+        {
+            "Right",
+            "Left"
+        };
+
         private static readonly string[] ScrollDirectionLabels =
         {
             "Horizontally",
@@ -64,9 +76,43 @@ namespace ResizeIt
 
             selected = ModConfig.Instance.FastSwitchingEnabled;
 
-            group.AddCheckbox("Fast switching enabled (LEFT CTRL + SPACE)", selected, sel =>
+            group.AddCheckbox("Mode fast switching enabled (LEFT CTRL + SPACE)", selected, sel =>
             {
                 ModConfig.Instance.FastSwitchingEnabled = sel;
+                ModConfig.Instance.Save();
+            });
+
+            group = helper.AddGroup("Control panel");
+
+            selected = ModConfig.Instance.ControlPanelEnabled;
+
+            group.AddCheckbox("Enabled", selected, sel =>
+            {
+                ModConfig.Instance.ControlPanelEnabled = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selectedIndex = GetSelectedOptionIndex(ControlPanelAlignmentValues, ModConfig.Instance.ControlPanelAlignment);
+
+            group.AddDropdown("Alignment", ControlPanelAlignmentLabels, selectedIndex, sel =>
+            {
+                ModConfig.Instance.ControlPanelAlignment = ControlPanelAlignmentValues[sel];
+                ModConfig.Instance.Save();
+            });
+
+            selectedValue = ModConfig.Instance.ControlPanelOpacity;
+
+            group.AddSlider("Opacity", 0.05f, 1f, 0.05f, selectedValue, sel =>
+            {
+                ModConfig.Instance.ControlPanelOpacity = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.ControlPanelFastSwitchingEnabled;
+
+            group.AddCheckbox("On/off fast switching enabled (LEFT ALT + SPACE)", selected, sel =>
+            {
+                ModConfig.Instance.ControlPanelFastSwitchingEnabled = sel;
                 ModConfig.Instance.Save();
             });
 
@@ -98,7 +144,7 @@ namespace ResizeIt
 
             selectedIndex = GetSelectedOptionIndex(ScrollDirectionValues, ModConfig.Instance.ScrollDirectionExpanded);
 
-            group.AddDropdown("Scroll Direction", ScrollDirectionLabels, selectedIndex, sel =>
+            group.AddDropdown("Scroll direction", ScrollDirectionLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.ScrollDirectionExpanded = ScrollDirectionValues[sel];
                 ModConfig.Instance.Save();
@@ -166,7 +212,7 @@ namespace ResizeIt
 
             selectedIndex = GetSelectedOptionIndex(ScrollDirectionValues, ModConfig.Instance.ScrollDirectionCompressed);
 
-            group.AddDropdown("Scroll Direction", ScrollDirectionLabels, selectedIndex, sel =>
+            group.AddDropdown("Scroll direction", ScrollDirectionLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.ScrollDirectionCompressed = ScrollDirectionValues[sel];
                 ModConfig.Instance.Save();

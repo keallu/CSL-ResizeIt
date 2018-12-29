@@ -60,6 +60,16 @@
     <Compile Include="ModUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExpandableScrollablePanel.cs" />
+    <Compile Include="ResourceLoader.cs" />
+    <Compile Include="UIUtils.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\buttondown.png" />
+    <EmbeddedResource Include="Icons\buttonleft.png" />
+    <EmbeddedResource Include="Icons\buttonresize.png" />
+    <EmbeddedResource Include="Icons\buttonright.png" />
+    <EmbeddedResource Include="Icons\buttonup.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
