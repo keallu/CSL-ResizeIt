@@ -1,5 +1,6 @@
 ﻿using ColossalFramework.UI;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ResizeIt
@@ -8,6 +9,8 @@ namespace ResizeIt
     {
         private bool _initialized;
         private bool _expanded;
+
+        private List<int> _controlPanelValidToolbarButtons;
 
         private UITabContainer _tsContainer;
         private UITextureAtlas _textureAtlas;
@@ -30,6 +33,8 @@ namespace ResizeIt
                 }
 
                 _textureAtlas = LoadResources();
+
+                _controlPanelValidToolbarButtons = new List<int>() { 0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 15, 16, 18, 20, 24, 25, 26, 27, 28 };
 
                 CreateControlPanel();
             }
@@ -246,7 +251,7 @@ namespace ResizeIt
 
                 _tsContainer.eventSelectedIndexChanged += (component, value) =>
                 {
-                    if (ModConfig.Instance.ControlPanelEnabled && value > -1)
+                    if (ModConfig.Instance.ControlPanelEnabled && _controlPanelValidToolbarButtons.Contains(value))
                     {
                         UpdateControlPanel();
 
@@ -371,14 +376,14 @@ namespace ResizeIt
         {
             try
             {
-                float scaling = ModConfig.Instance.ScalingExpanded;
-                int rows = ModConfig.Instance.RowsExpanded;
-                int columns = ModConfig.Instance.ColumnsExpanded;
+                float scaling = ModConfig.Instance.ScalingExpanded < 0.5f ? 1f : ModConfig.Instance.ScalingExpanded;
+                int rows = ModConfig.Instance.RowsExpanded > 0f ? ModConfig.Instance.RowsExpanded : 3;
+                int columns = ModConfig.Instance.ColumnsExpanded > 0f ? ModConfig.Instance.ColumnsExpanded : 7;
                 bool scrollVertically = ModConfig.Instance.ScrollDirectionExpanded is "Vertically" ? true : false;
                 bool alignmentCentered = ModConfig.Instance.AlignmentExpanded is "Centered" ? true : false;
                 float horizontalOffset = ModConfig.Instance.HorizontalOffsetExpanded;
                 float verticalOffset = ModConfig.Instance.VerticalOffsetExpanded;
-                float opacity = ModConfig.Instance.OpacityExpanded;
+                float opacity = ModConfig.Instance.OpacityExpanded > 0f ? ModConfig.Instance.OpacityExpanded : 1f;
 
                 UpdateGUI(scaling, rows, columns, scrollVertically, alignmentCentered, horizontalOffset, verticalOffset, opacity);
 
@@ -396,14 +401,14 @@ namespace ResizeIt
         {
             try
             {
-                float scaling = ModConfig.Instance.ScalingCompressed;
-                int rows = ModConfig.Instance.RowsCompressed;
-                int columns = ModConfig.Instance.ColumnsCompressed;
+                float scaling = ModConfig.Instance.ScalingCompressed < 0.5f ? 1f : ModConfig.Instance.ScalingCompressed;
+                int rows = ModConfig.Instance.RowsCompressed > 0f ? ModConfig.Instance.RowsCompressed : 1;
+                int columns = ModConfig.Instance.ColumnsCompressed > 0f ? ModConfig.Instance.ColumnsCompressed : 7;
                 bool scrollVertically = ModConfig.Instance.ScrollDirectionCompressed is "Vertically" ? true : false;
                 bool alignmentCentered = ModConfig.Instance.AlignmentCompressed is "Centered" ? true : false;
                 float horizontalOffset = ModConfig.Instance.HorizontalOffsetCompressed;
                 float verticalOffset = ModConfig.Instance.VerticalOffsetCompressed;
-                float opacity = ModConfig.Instance.OpacityCompressed;
+                float opacity = ModConfig.Instance.OpacityCompressed > 0f ? ModConfig.Instance.OpacityCompressed : 1f;
 
                 UpdateGUI(scaling, rows, columns, scrollVertically, alignmentCentered, horizontalOffset, verticalOffset, opacity);
 
@@ -634,7 +639,7 @@ namespace ResizeIt
 
                         if (scrollbar != null)
                         {
-                            
+
                         }
 
                         UIComponent slicedSprite = panel.Find("UISlicedSprite").GetComponent<UIComponent>();
