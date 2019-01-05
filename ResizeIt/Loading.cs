@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ResizeIt
 {
 
-    public class Loader : LoadingExtensionBase
+    public class Loading : LoadingExtensionBase
     {
         private LoadMode _loadMode;
         private GameObject _gameObject;
@@ -25,14 +25,14 @@ namespace ResizeIt
                 UIView objectOfType = UnityEngine.Object.FindObjectOfType<UIView>();
                 if (objectOfType != null)
                 {
-                    _gameObject = new GameObject("ExpandableScrollablePanel");
+                    _gameObject = new GameObject("ResizeItExpandableScrollablePanel");
                     _gameObject.transform.parent = objectOfType.transform;
                     _gameObject.AddComponent<ExpandableScrollablePanel>();
                 }
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] Loader:OnLevelLoaded -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] Loading:OnLevelLoaded -> Exception: " + e.Message);
             }
         }
 
@@ -54,7 +54,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] Loader:OnLevelUnloading -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] Loading:OnLevelUnloading -> Exception: " + e.Message);
             }
         }
     }

@@ -10,7 +10,8 @@ namespace ResizeIt
         private bool _initialized;
         private bool _expanded;
 
-        private List<int> _controlPanelValidToolbarButtons;
+        private List<string> _controlPanelValidToolbarButtonNames;
+        private List<int> _controlPanelValidToolbarButtonIndex;
 
         private UITabContainer _tsContainer;
         private UITextureAtlas _textureAtlas;
@@ -34,7 +35,7 @@ namespace ResizeIt
 
                 _textureAtlas = LoadResources();
 
-                _controlPanelValidToolbarButtons = new List<int>() { 0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 15, 16, 18, 20, 24, 25, 26, 27, 28 };
+                _controlPanelValidToolbarButtonNames = new List<string>() { "RoadsPanel", "ZoningPanel", "DistrictPanel", "ElectricityPanel", "WaterAndSewagePanel", "GarbagePanel", "HealthcarePanel", "FireDepartmentPanel", "PolicePanel", "EducationPanel", "PublicTransportPanel", "BeautificationPanel", "MonumentsPanel", "WondersPanel", "LandscapingPanel", "ResourcePanel", "WaterPanel", "PloppableBuildingPanel", "FindItGroupPanel" };
 
                 CreateControlPanel();
             }
@@ -251,7 +252,20 @@ namespace ResizeIt
 
                 _tsContainer.eventSelectedIndexChanged += (component, value) =>
                 {
-                    if (ModConfig.Instance.ControlPanelEnabled && _controlPanelValidToolbarButtons.Contains(value))
+                    if (value > -1 && _controlPanelValidToolbarButtonIndex == null)
+                    {
+                        _controlPanelValidToolbarButtonIndex = new List<int>();
+
+                        for (int i = 0; i < _tsContainer.components.Count; i++)
+                        {
+                            if (_controlPanelValidToolbarButtonNames.Contains(_tsContainer.components[i].name))
+                            {
+                                _controlPanelValidToolbarButtonIndex.Add(i);
+                            }
+                        }
+                    }
+
+                    if (ModConfig.Instance.ControlPanelEnabled && _controlPanelValidToolbarButtonIndex.Contains(value))
                     {
                         UpdateControlPanel();
 
@@ -340,16 +354,16 @@ namespace ResizeIt
             }
         }
 
-        private void UpdateNumberOfItems(int numberOfItems)
+        private void UpdateNumberOfItemsText(string text)
         {
             try
             {
-                _topLabel.text = numberOfItems + " items";
+                _topLabel.text = text;
                 _topLabel.relativePosition = new Vector3(_controlPanel.width / 2f - _topLabel.width / 2f, 10f);
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:UpdateNumberOfItems -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ExpandableScrollablePanel:UpdateNumberOfItemsText -> Exception: " + e.Message);
             }
         }
 
@@ -464,7 +478,7 @@ namespace ResizeIt
                                     {
                                         if (value)
                                         {
-                                            UpdateNumberOfItems(component.childCount);
+                                            UpdateNumberOfItemsText(component.childCount + " items");
                                         }
                                     };
 
@@ -566,7 +580,7 @@ namespace ResizeIt
                             {
                                 if (value)
                                 {
-                                    UpdateNumberOfItems(component.childCount);
+                                    UpdateNumberOfItemsText(component.childCount + " items");
                                 }
                             };
 
@@ -618,35 +632,45 @@ namespace ResizeIt
         {
             try
             {
-                UIComponent panel = GameObject.Find("FindItDefaultPanel").GetComponent<UIComponent>();
+                UIComponent finditDefaultPanel = GameObject.Find("FindItDefaultPanel").GetComponent<UIComponent>();
 
-                if (panel != null)
+                if (finditDefaultPanel != null)
                 {
-                    panel.height = _tsContainer.height;
-                    panel.width = Mathf.Round(109f * scaling * columns) + 1;
+                    finditDefaultPanel.height = _tsContainer.height;
+                    finditDefaultPanel.width = Mathf.Round(109f * scaling * columns) + 1;
 
-                    UIComponent scrollPanel = panel.Find("ScrollablePanel").GetComponent<UIComponent>();
+                    UIComponent finditScrollablePanel = finditDefaultPanel.Find("ScrollablePanel").GetComponent<UIComponent>();
 
-                    if (scrollPanel != null)
+                    if (finditScrollablePanel != null)
                     {
-                        UIScrollablePanel scrollablePanel = (UIScrollablePanel)scrollPanel;
+                        UIScrollablePanel scrollablePanel = (UIScrollablePanel)finditScrollablePanel;
 
                         scrollablePanel.wrapLayout = true;
                         scrollablePanel.autoLayout = true;
                         scrollablePanel.autoLayoutStart = LayoutStart.TopLeft;
 
-                        UIComponent scrollbar = panel.Find("UIScrollbar").GetComponent<UIComponent>();
-
-                        if (scrollbar != null)
+                        scrollablePanel.eventVisibilityChanged += (component, value) =>
                         {
+                            if (value)
+                            {
+                                UpdateNumberOfItemsText("Find It!");
+                            }
+                        };
+                    }
 
-                        }
+                    UIComponent finditScrollbar = finditDefaultPanel.Find("UIScrollbar").GetComponent<UIComponent>();
 
-                        UIComponent slicedSprite = panel.Find("UISlicedSprite").GetComponent<UIComponent>();
+                    if (finditScrollbar != null)
+                    {
+                        UIScrollbar scrollbar = (UIScrollbar)finditScrollbar;
 
-                        if (slicedSprite != null)
+                        UIComponent finditSlicedSpriteTrack = finditScrollbar.Find("UISlicedSprite").GetComponent<UIComponent>();
+
+                        if (finditSlicedSpriteTrack != null)
                         {
+                            UISlicedSprite slicedSpriteTrack = (UISlicedSprite)finditSlicedSpriteTrack;
 
+                            slicedSpriteTrack.height = _tsContainer.height;
                         }
                     }
                 }
