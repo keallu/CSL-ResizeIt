@@ -17,7 +17,7 @@ namespace ResizeIt
             {
                 _loadMode = mode;
 
-                if (_loadMode != LoadMode.LoadGame && _loadMode != LoadMode.NewGame && _loadMode != LoadMode.NewGameFromScenario)
+                if (_loadMode != LoadMode.LoadGame && _loadMode != LoadMode.NewGame && _loadMode != LoadMode.LoadMap && _loadMode != LoadMode.NewMap && _loadMode != LoadMode.NewGameFromScenario)
                 {
                     return;
                 }

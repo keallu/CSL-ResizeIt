@@ -17,6 +17,7 @@ namespace ResizeIt
         private UITextureAtlas _textureAtlas;
         private UIPanel _controlPanel;
         private UILabel _topLabel;
+        private UISprite _hoverSprite;
         private UISprite _resizeSprite;
         private UISprite _leftSprite;
         private UISprite _rightSprite;
@@ -35,7 +36,7 @@ namespace ResizeIt
 
                 _textureAtlas = LoadResources();
 
-                _controlPanelValidToolbarButtonNames = new List<string>() { "RoadsPanel", "ZoningPanel", "DistrictPanel", "ElectricityPanel", "WaterAndSewagePanel", "GarbagePanel", "HealthcarePanel", "FireDepartmentPanel", "PolicePanel", "EducationPanel", "PublicTransportPanel", "BeautificationPanel", "MonumentsPanel", "WondersPanel", "LandscapingPanel", "ResourcePanel", "WaterPanel", "PloppableBuildingPanel", "FindItGroupPanel" };
+                _controlPanelValidToolbarButtonNames = new List<string>() { "RoadsPanel", "ZoningPanel", "DistrictPanel", "ElectricityPanel", "WaterAndSewagePanel", "GarbagePanel", "HealthcarePanel", "FireDepartmentPanel", "PolicePanel", "EducationPanel", "PublicTransportPanel", "BeautificationPanel", "MonumentsPanel", "WondersPanel", "LandscapingPanel", "ResourcePanel", "WaterPanel", "SurfacePanel", "PloppableBuildingPanel", "FindItGroupPanel" };
 
                 CreateControlPanel();
             }
@@ -156,9 +157,11 @@ namespace ResizeIt
                     {
                         "buttondown",
                         "buttonleft",
-                        "buttonresize",
+                        "buttonresizecompressed",
+                        "buttonresizeexpanded",
                         "buttonright",
-                        "buttonup"
+                        "buttonup",
+                        "hover"
                     };
 
                     _textureAtlas = ResourceLoader.CreateTextureAtlas("ResizeItAtlas", spriteNames, "ResizeIt.Icons.");
@@ -189,15 +192,29 @@ namespace ResizeIt
                 _topLabel.textColor = new Color32(185, 221, 254, 255);
                 _topLabel.textScale = 0.6f;
 
+                _hoverSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelHoverSprite");
+                _hoverSprite.atlas = _textureAtlas;
+                _hoverSprite.spriteName = "hover";
+                _hoverSprite.autoSize = false;
+                _hoverSprite.isVisible = false;
+
                 _resizeSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelResizeSprite");
                 _resizeSprite.atlas = _textureAtlas;
-                _resizeSprite.spriteName = "buttonresize";
+                _resizeSprite.spriteName = "buttonresizecompressed";
                 _resizeSprite.autoSize = false;
                 _resizeSprite.size = new Vector2(24f, 24f);
                 _resizeSprite.relativePosition = new Vector3(_controlPanel.width / 2f - _resizeSprite.width / 2f, _controlPanel.height / 2f - _resizeSprite.height / 2f);
                 _resizeSprite.eventClick += (component, eventParam) =>
                 {
                     ToggleMode();
+                };
+                _resizeSprite.eventMouseEnter += (component, eventParam) =>
+                {
+                    OnButtonEnter(component, eventParam);
+                };
+                _resizeSprite.eventMouseLeave += (component, eventParam) =>
+                {
+                    OnButtonLeave(component, eventParam);
                 };
 
                 _leftSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelLeftSprite");
@@ -210,6 +227,14 @@ namespace ResizeIt
                 {
                     AddOrRemoveRowsOrColumns(0, -1);
                 };
+                _leftSprite.eventMouseEnter += (component, eventParam) =>
+                {
+                    OnButtonEnter(component, eventParam);
+                };
+                _leftSprite.eventMouseLeave += (component, eventParam) =>
+                {
+                    OnButtonLeave(component, eventParam);
+                };
 
                 _rightSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelRightSprite");
                 _rightSprite.atlas = _textureAtlas;
@@ -220,6 +245,14 @@ namespace ResizeIt
                 _rightSprite.eventClick += (component, eventParam) =>
                 {
                     AddOrRemoveRowsOrColumns(0, 1);
+                };
+                _rightSprite.eventMouseEnter += (component, eventParam) =>
+                {
+                    OnButtonEnter(component, eventParam);
+                };
+                _rightSprite.eventMouseLeave += (component, eventParam) =>
+                {
+                    OnButtonLeave(component, eventParam);
                 };
 
                 _upSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelUpSprite");
@@ -232,6 +265,14 @@ namespace ResizeIt
                 {
                     AddOrRemoveRowsOrColumns(1, 0);
                 };
+                _upSprite.eventMouseEnter += (component, eventParam) =>
+                {
+                    OnButtonEnter(component, eventParam);
+                };
+                _upSprite.eventMouseLeave += (component, eventParam) =>
+                {
+                    OnButtonLeave(component, eventParam);
+                };
 
                 _downSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelDownSprite");
                 _downSprite.atlas = _textureAtlas;
@@ -242,6 +283,14 @@ namespace ResizeIt
                 _downSprite.eventClick += (component, eventParam) =>
                 {
                     AddOrRemoveRowsOrColumns(-1, 0);
+                };
+                _downSprite.eventMouseEnter += (component, eventParam) =>
+                {
+                    OnButtonEnter(component, eventParam);
+                };
+                _downSprite.eventMouseLeave += (component, eventParam) =>
+                {
+                    OnButtonLeave(component, eventParam);
                 };
 
                 _bottomLabel = UIUtils.CreateLabel(_controlPanel, "ResizeItControlPanelBottomLabel", "1 x 7 @ 100%");
@@ -306,6 +355,21 @@ namespace ResizeIt
             }
         }
 
+        private void OnButtonEnter(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            float diameter = component.name is "ResizeItControlPanelResizeSprite" ? 36f : 26.25f;
+
+            _hoverSprite.size = new Vector3(diameter, diameter);
+            _hoverSprite.AlignTo(component, UIAlignAnchor.TopLeft);
+            _hoverSprite.relativePosition = new Vector3(0 - ((diameter - component.width) / 2f), 0 - ((diameter - component.height) / 2f));
+            _hoverSprite.isVisible = true;
+        }
+
+        private void OnButtonLeave(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            _hoverSprite.isVisible = false;
+        }
+
         private void ToggleControlPanel()
         {
             try
@@ -334,6 +398,9 @@ namespace ResizeIt
                 int rows = _expanded ? ModConfig.Instance.RowsExpanded : ModConfig.Instance.RowsCompressed;
                 int columns = _expanded ? ModConfig.Instance.ColumnsExpanded : ModConfig.Instance.ColumnsCompressed;
                 float scaling = _expanded ? ModConfig.Instance.ScalingExpanded : ModConfig.Instance.ScalingCompressed;
+                string spriteName = _expanded ? "buttonresizeexpanded" : "buttonresizecompressed";
+
+                _resizeSprite.spriteName = spriteName;
                 _bottomLabel.text = string.Format("{0} x {1} @ {2}%", rows.ToString(), columns.ToString(), (scaling * 100).ToString());
                 _bottomLabel.relativePosition = new Vector3(_controlPanel.width / 2f - _bottomLabel.width / 2f, _controlPanel.height - _bottomLabel.height - 5f);
 

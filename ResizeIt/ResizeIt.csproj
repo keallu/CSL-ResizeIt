@@ -63,13 +63,20 @@
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="UIUtils.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\hover.png" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\buttondown.png" />
     <EmbeddedResource Include="Icons\buttonleft.png" />
-    <EmbeddedResource Include="Icons\buttonresize.png" />
     <EmbeddedResource Include="Icons\buttonright.png" />
     <EmbeddedResource Include="Icons\buttonup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\buttonresizecompressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\buttonresizeexpanded.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
