@@ -74,6 +74,14 @@ namespace ResizeIt
                 ModConfig.Instance.Save();
             });
 
+            selected = ModConfig.Instance.SafeModeEnabled;
+
+            group.AddCheckbox("Safe mode enabled", selected, sel =>
+            {
+                ModConfig.Instance.SafeModeEnabled = sel;
+                ModConfig.Instance.Save();
+            });
+
             selected = ModConfig.Instance.FastSwitchingEnabled;
 
             group.AddCheckbox("Mode fast switching enabled (LEFT CTRL + SPACE)", selected, sel =>
@@ -126,22 +134,6 @@ namespace ResizeIt
                 ModConfig.Instance.Save();
             });
 
-            selectedValue = ModConfig.Instance.RowsExpanded;
-
-            group.AddSlider("Rows", 1f, 5f, 1f, selectedValue, sel =>
-            {
-                ModConfig.Instance.RowsExpanded = (int)sel;
-                ModConfig.Instance.Save();
-            });
-
-            selectedValue = ModConfig.Instance.ColumnsExpanded;
-
-            group.AddSlider("Columns", 5f, 30f, 1f, selectedValue, sel =>
-            {
-                ModConfig.Instance.ColumnsExpanded = (int)sel;
-                ModConfig.Instance.Save();
-            });
-
             selectedIndex = GetSelectedOptionIndex(ScrollDirectionValues, ModConfig.Instance.ScrollDirectionExpanded);
 
             group.AddDropdown("Scroll direction", ScrollDirectionLabels, selectedIndex, sel =>
@@ -191,22 +183,6 @@ namespace ResizeIt
             group.AddSlider("Scaling", 0.5f, 1f, 0.05f, selectedValue, sel =>
             {
                 ModConfig.Instance.ScalingCompressed = sel;
-                ModConfig.Instance.Save();
-            });
-
-            selectedValue = ModConfig.Instance.RowsCompressed;
-
-            group.AddSlider("Rows", 1f, 5f, 1f, selectedValue, sel =>
-            {
-                ModConfig.Instance.RowsCompressed = (int)sel;
-                ModConfig.Instance.Save();
-            });
-
-            selectedValue = ModConfig.Instance.ColumnsCompressed;
-
-            group.AddSlider("Columns", 5f, 30f, 1f, selectedValue, sel =>
-            {
-                ModConfig.Instance.ColumnsCompressed = (int)sel;
                 ModConfig.Instance.Save();
             });
 

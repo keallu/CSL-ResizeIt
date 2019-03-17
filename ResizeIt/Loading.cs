@@ -17,11 +17,6 @@ namespace ResizeIt
             {
                 _loadMode = mode;
 
-                if (_loadMode != LoadMode.LoadGame && _loadMode != LoadMode.NewGame && _loadMode != LoadMode.LoadMap && _loadMode != LoadMode.NewMap && _loadMode != LoadMode.NewGameFromScenario)
-                {
-                    return;
-                }
-
                 UIView objectOfType = UnityEngine.Object.FindObjectOfType<UIView>();
                 if (objectOfType != null)
                 {
@@ -40,11 +35,6 @@ namespace ResizeIt
         {
             try
             {
-                if (_loadMode != LoadMode.LoadGame && _loadMode != LoadMode.NewGame && _loadMode != LoadMode.NewGameFromScenario)
-                {
-                    return;
-                }
-
                 if (_gameObject == null)
                 {
                     return;

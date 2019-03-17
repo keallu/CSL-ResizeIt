@@ -5,6 +5,7 @@
     {
         public bool ConfigUpdated { get; set; } = false;
         public string DefaultMode { get; set; } = "Expanded mode";
+        public bool SafeModeEnabled { get; set; } = false;
         public bool FastSwitchingEnabled { get; set; } = true;
         public bool ControlPanelEnabled { get; set; } = true;
         public string ControlPanelAlignment { get; set; } = "Left";

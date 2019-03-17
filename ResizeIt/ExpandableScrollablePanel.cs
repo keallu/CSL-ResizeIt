@@ -299,21 +299,21 @@ namespace ResizeIt
                 _bottomLabel.textColor = new Color32(185, 221, 254, 255);
                 _bottomLabel.textScale = 0.6f;
 
-                _tsContainer.eventSelectedIndexChanged += (component, value) =>
+                if (_controlPanelValidToolbarButtonIndex == null)
                 {
-                    if (value > -1 && _controlPanelValidToolbarButtonIndex == null)
-                    {
-                        _controlPanelValidToolbarButtonIndex = new List<int>();
+                    _controlPanelValidToolbarButtonIndex = new List<int>();
 
-                        for (int i = 0; i < _tsContainer.components.Count; i++)
+                    for (int i = 0; i < _tsContainer.components.Count; i++)
+                    {
+                        if (_controlPanelValidToolbarButtonNames.Contains(_tsContainer.components[i].name))
                         {
-                            if (_controlPanelValidToolbarButtonNames.Contains(_tsContainer.components[i].name))
-                            {
-                                _controlPanelValidToolbarButtonIndex.Add(i);
-                            }
+                            _controlPanelValidToolbarButtonIndex.Add(i);
                         }
                     }
+                }
 
+                _tsContainer.eventSelectedIndexChanged += (component, value) =>
+                {
                     if (ModConfig.Instance.ControlPanelEnabled && _controlPanelValidToolbarButtonIndex.Contains(value))
                     {
                         UpdateControlPanel();
@@ -400,6 +400,10 @@ namespace ResizeIt
                 float scaling = _expanded ? ModConfig.Instance.ScalingExpanded : ModConfig.Instance.ScalingCompressed;
                 string spriteName = _expanded ? "buttonresizeexpanded" : "buttonresizecompressed";
 
+                rows = rows == 0 ? 1 : rows;
+                columns = columns == 0 ? 7 : columns;
+                scaling = scaling == 0 ? 100f : scaling;
+
                 _resizeSprite.spriteName = spriteName;
                 _bottomLabel.text = string.Format("{0} x {1} @ {2}%", rows.ToString(), columns.ToString(), (scaling * 100).ToString());
                 _bottomLabel.relativePosition = new Vector3(_controlPanel.width / 2f - _bottomLabel.width / 2f, _controlPanel.height - _bottomLabel.height - 5f);
@@ -458,8 +462,8 @@ namespace ResizeIt
             try
             {
                 float scaling = ModConfig.Instance.ScalingExpanded < 0.5f ? 1f : ModConfig.Instance.ScalingExpanded;
-                int rows = ModConfig.Instance.RowsExpanded > 0f ? ModConfig.Instance.RowsExpanded : 3;
-                int columns = ModConfig.Instance.ColumnsExpanded > 0f ? ModConfig.Instance.ColumnsExpanded : 7;
+                int rows = ModConfig.Instance.RowsExpanded > 0 ? ModConfig.Instance.RowsExpanded : 3;
+                int columns = ModConfig.Instance.ColumnsExpanded > 0 ? ModConfig.Instance.ColumnsExpanded : 7;
                 bool scrollVertically = ModConfig.Instance.ScrollDirectionExpanded is "Vertically" ? true : false;
                 bool alignmentCentered = ModConfig.Instance.AlignmentExpanded is "Centered" ? true : false;
                 float horizontalOffset = ModConfig.Instance.HorizontalOffsetExpanded;
@@ -483,8 +487,8 @@ namespace ResizeIt
             try
             {
                 float scaling = ModConfig.Instance.ScalingCompressed < 0.5f ? 1f : ModConfig.Instance.ScalingCompressed;
-                int rows = ModConfig.Instance.RowsCompressed > 0f ? ModConfig.Instance.RowsCompressed : 1;
-                int columns = ModConfig.Instance.ColumnsCompressed > 0f ? ModConfig.Instance.ColumnsCompressed : 7;
+                int rows = ModConfig.Instance.RowsCompressed > 0 ? ModConfig.Instance.RowsCompressed : 1;
+                int columns = ModConfig.Instance.ColumnsCompressed > 0 ? ModConfig.Instance.ColumnsCompressed : 7;
                 bool scrollVertically = ModConfig.Instance.ScrollDirectionCompressed is "Vertically" ? true : false;
                 bool alignmentCentered = ModConfig.Instance.AlignmentCompressed is "Centered" ? true : false;
                 float horizontalOffset = ModConfig.Instance.HorizontalOffsetCompressed;
@@ -519,6 +523,11 @@ namespace ResizeIt
 
                 foreach (UIComponent toolPanel in _tsContainer.components)
                 {
+                    if (ModConfig.Instance.SafeModeEnabled && !_controlPanelValidToolbarButtonIndex.Contains(_tsContainer.components.IndexOf(toolPanel)))
+                    {
+                        continue;
+                    }
+
                     if (toolPanel is UIPanel)
                     {
                         gtsContainer = toolPanel.GetComponentInChildren<UITabContainer>();
