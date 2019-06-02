@@ -8,22 +8,14 @@ namespace ResizeIt
 
     public class Loading : LoadingExtensionBase
     {
-        private LoadMode _loadMode;
-        private GameObject _gameObject;
+        private GameObject _resizeManagerGameObject;
 
         public override void OnLevelLoaded(LoadMode mode)
         {
             try
             {
-                _loadMode = mode;
-
-                UIView objectOfType = UnityEngine.Object.FindObjectOfType<UIView>();
-                if (objectOfType != null)
-                {
-                    _gameObject = new GameObject("ResizeItExpandableScrollablePanel");
-                    _gameObject.transform.parent = objectOfType.transform;
-                    _gameObject.AddComponent<ExpandableScrollablePanel>();
-                }
+                _resizeManagerGameObject = new GameObject("ResizeItResizeManager");
+                _resizeManagerGameObject.AddComponent<ResizeManager>();
             }
             catch (Exception e)
             {
@@ -35,12 +27,10 @@ namespace ResizeIt
         {
             try
             {
-                if (_gameObject == null)
+                if (_resizeManagerGameObject != null)
                 {
-                    return;
-                }
-
-                UnityEngine.Object.Destroy(_gameObject);
+                    UnityEngine.Object.Destroy(_resizeManagerGameObject);
+                }                
             }
             catch (Exception e)
             {

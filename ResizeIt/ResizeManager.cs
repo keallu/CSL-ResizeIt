@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ResizeIt
 {
-    class ExpandableScrollablePanel : MonoBehaviour
+    public class ResizeManager : MonoBehaviour
     {
         private bool _initialized;
         private bool _expanded;
@@ -33,28 +33,10 @@ namespace ResizeIt
                 {
                     _tsContainer = GameObject.Find("TSContainer").GetComponent<UITabContainer>();
                 }
-
-                _textureAtlas = LoadResources();
-
-                _controlPanelValidToolbarButtonNames = new List<string>() { "RoadsPanel", "ZoningPanel", "DistrictPanel", "ElectricityPanel", "WaterAndSewagePanel", "GarbagePanel", "HealthcarePanel", "FireDepartmentPanel", "PolicePanel", "EducationPanel", "PublicTransportPanel", "BeautificationPanel", "MonumentsPanel", "WondersPanel", "LandscapingPanel", "ResourcePanel", "WaterPanel", "SurfacePanel", "PloppableBuildingPanel", "FindItGroupPanel" };
-
-                CreateControlPanel();
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:Awake -> Exception: " + e.Message);
-            }
-        }
-
-        private void OnEnable()
-        {
-            try
-            {
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:OnEnable -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:Awake -> Exception: " + e.Message);
             }
         }
 
@@ -62,11 +44,25 @@ namespace ResizeIt
         {
             try
             {
+                _textureAtlas = LoadResources();
 
+                _controlPanelValidToolbarButtonNames = new List<string>() { "RoadsPanel", "ZoningPanel", "DistrictPanel", "ElectricityPanel", "WaterAndSewagePanel", "GarbagePanel", "HealthcarePanel", "FireDepartmentPanel", "PolicePanel", "EducationPanel", "PublicTransportPanel", "BeautificationPanel", "MonumentsPanel", "WondersPanel", "LandscapingPanel", "ResourcePanel", "WaterPanel", "SurfacePanel", "PloppableBuildingPanel", "FindItGroupPanel" };
+
+                ModConfig.Instance.ScalingExpanded = ModConfig.Instance.ScalingExpanded > 0.5f ? ModConfig.Instance.ScalingExpanded : 1f;
+                ModConfig.Instance.RowsExpanded = ModConfig.Instance.RowsExpanded > 0 ? ModConfig.Instance.RowsExpanded : 3;
+                ModConfig.Instance.ColumnsExpanded = ModConfig.Instance.ColumnsExpanded > 0 ? ModConfig.Instance.ColumnsExpanded : 7;
+                ModConfig.Instance.OpacityExpanded = ModConfig.Instance.OpacityExpanded > 0f ? ModConfig.Instance.OpacityExpanded : 1f;
+
+                ModConfig.Instance.ScalingCompressed = ModConfig.Instance.ScalingCompressed > 0.5f ? ModConfig.Instance.ScalingCompressed : 1f;
+                ModConfig.Instance.RowsCompressed = ModConfig.Instance.RowsCompressed > 0 ? ModConfig.Instance.RowsCompressed : 1;
+                ModConfig.Instance.ColumnsCompressed = ModConfig.Instance.ColumnsCompressed > 0 ? ModConfig.Instance.ColumnsCompressed : 7;
+                ModConfig.Instance.OpacityCompressed = ModConfig.Instance.OpacityCompressed > 0f ? ModConfig.Instance.OpacityCompressed : 1f;
+
+                CreateControlPanel();
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:Start -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:Start -> Exception: " + e.Message);
             }
         }
 
@@ -114,19 +110,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:Update -> Exception: " + e.Message);
-            }
-        }
-
-        private void OnDisable()
-        {
-            try
-            {
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:OnDisable -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:Update -> Exception: " + e.Message);
             }
         }
 
@@ -134,16 +118,46 @@ namespace ResizeIt
         {
             try
             {
-                if (_controlPanel == null)
+                if (_bottomLabel != null)
                 {
-                    return;
+                    Destroy(_bottomLabel);
                 }
-
-                UnityEngine.Object.Destroy(_controlPanel.gameObject);
+                if (_downSprite != null)
+                {
+                    Destroy(_downSprite);
+                }
+                if (_upSprite != null)
+                {
+                    Destroy(_upSprite);
+                }
+                if (_rightSprite != null)
+                {
+                    Destroy(_rightSprite);
+                }
+                if (_leftSprite != null)
+                {
+                    Destroy(_leftSprite);
+                }
+                if (_resizeSprite != null)
+                {
+                    Destroy(_resizeSprite);
+                }
+                if (_hoverSprite != null)
+                {
+                    Destroy(_hoverSprite);
+                }
+                if (_topLabel != null)
+                {
+                    Destroy(_topLabel);
+                }
+                if (_controlPanel != null)
+                {
+                    Destroy(_controlPanel);
+                }
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:OnDestroy -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:OnDestroy -> Exception: " + e.Message);
             }
         }
 
@@ -171,7 +185,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:LoadResources -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:LoadResources -> Exception: " + e.Message);
                 return null;
             }
         }
@@ -206,7 +220,12 @@ namespace ResizeIt
                 _resizeSprite.relativePosition = new Vector3(_controlPanel.width / 2f - _resizeSprite.width / 2f, _controlPanel.height / 2f - _resizeSprite.height / 2f);
                 _resizeSprite.eventClick += (component, eventParam) =>
                 {
-                    ToggleMode();
+                    if (!eventParam.used)
+                    {
+                        ToggleMode();
+
+                        eventParam.Use();
+                    }
                 };
                 _resizeSprite.eventMouseEnter += (component, eventParam) =>
                 {
@@ -225,7 +244,12 @@ namespace ResizeIt
                 _leftSprite.relativePosition = new Vector3(_controlPanel.width / 2f - _leftSprite.width / 2f - 25f, _controlPanel.height / 2f - _leftSprite.height / 2f);
                 _leftSprite.eventClick += (component, eventParam) =>
                 {
-                    AddOrRemoveRowsOrColumns(0, -1);
+                    if (!eventParam.used)
+                    {
+                        AddOrRemoveRowsOrColumns(0, -1);
+
+                        eventParam.Use();
+                    }
                 };
                 _leftSprite.eventMouseEnter += (component, eventParam) =>
                 {
@@ -244,7 +268,12 @@ namespace ResizeIt
                 _rightSprite.relativePosition = new Vector3(_controlPanel.width / 2f - _rightSprite.width / 2f + 25f, _controlPanel.height / 2f - _rightSprite.height / 2f);
                 _rightSprite.eventClick += (component, eventParam) =>
                 {
-                    AddOrRemoveRowsOrColumns(0, 1);
+                    if (!eventParam.used)
+                    {
+                        AddOrRemoveRowsOrColumns(0, 1);
+
+                        eventParam.Use();
+                    }
                 };
                 _rightSprite.eventMouseEnter += (component, eventParam) =>
                 {
@@ -263,7 +292,12 @@ namespace ResizeIt
                 _upSprite.relativePosition = new Vector3(_controlPanel.width / 2f - _upSprite.width / 2f, _controlPanel.height / 2f - _upSprite.height / 2f - 25f);
                 _upSprite.eventClick += (component, eventParam) =>
                 {
-                    AddOrRemoveRowsOrColumns(1, 0);
+                    if (!eventParam.used)
+                    {
+                        AddOrRemoveRowsOrColumns(1, 0);
+
+                        eventParam.Use();
+                    }
                 };
                 _upSprite.eventMouseEnter += (component, eventParam) =>
                 {
@@ -282,7 +316,12 @@ namespace ResizeIt
                 _downSprite.relativePosition = new Vector3(_controlPanel.width / 2f - _downSprite.width / 2f, _controlPanel.height / 2f - _downSprite.height / 2f + 25f);
                 _downSprite.eventClick += (component, eventParam) =>
                 {
-                    AddOrRemoveRowsOrColumns(-1, 0);
+                    if (!eventParam.used)
+                    {
+                        AddOrRemoveRowsOrColumns(-1, 0);
+
+                        eventParam.Use();
+                    }
                 };
                 _downSprite.eventMouseEnter += (component, eventParam) =>
                 {
@@ -293,27 +332,31 @@ namespace ResizeIt
                     OnButtonLeave(component, eventParam);
                 };
 
-                _bottomLabel = UIUtils.CreateLabel(_controlPanel, "ResizeItControlPanelBottomLabel", "1 x 7 @ 100%");
+                _bottomLabel = UIUtils.CreateLabel(_controlPanel, "ResizeItControlPanelBottomLabel", "0 x 0 @ 0%");
                 _bottomLabel.textAlignment = UIHorizontalAlignment.Center;
                 _bottomLabel.verticalAlignment = UIVerticalAlignment.Middle;
                 _bottomLabel.textColor = new Color32(185, 221, 254, 255);
-                _bottomLabel.textScale = 0.6f;
-
-                if (_controlPanelValidToolbarButtonIndex == null)
-                {
-                    _controlPanelValidToolbarButtonIndex = new List<int>();
-
-                    for (int i = 0; i < _tsContainer.components.Count; i++)
-                    {
-                        if (_controlPanelValidToolbarButtonNames.Contains(_tsContainer.components[i].name))
-                        {
-                            _controlPanelValidToolbarButtonIndex.Add(i);
-                        }
-                    }
-                }
+                _bottomLabel.textScale = 0.6f;                
 
                 _tsContainer.eventSelectedIndexChanged += (component, value) =>
                 {
+                    if (_controlPanelValidToolbarButtonIndex == null)
+                    {
+                        _controlPanelValidToolbarButtonIndex = new List<int>();
+
+                        int index = 0;
+
+                        foreach (UIComponent comp in _tsContainer.components)
+                        {
+                            if (_controlPanelValidToolbarButtonNames.Contains(comp.name))
+                            {
+                                _controlPanelValidToolbarButtonIndex.Add(index);
+                            }
+
+                            index++;
+                        }
+                    }
+
                     if (ModConfig.Instance.ControlPanelEnabled && _controlPanelValidToolbarButtonIndex.Contains(value))
                     {
                         UpdateControlPanel();
@@ -328,7 +371,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:CreateControlPanel -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:CreateControlPanel -> Exception: " + e.Message);
             }
         }
 
@@ -351,7 +394,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:AddOrRemoveRowsOrColumns -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:AddOrRemoveRowsOrColumns -> Exception: " + e.Message);
             }
         }
 
@@ -375,19 +418,23 @@ namespace ResizeIt
             try
             {
                 if (ModConfig.Instance.ControlPanelEnabled)
-                {
-                    _controlPanel.isVisible = false;
+                {   
                     ModConfig.Instance.ControlPanelEnabled = false;
+                    _controlPanel.isVisible = false;
                 }
                 else
                 {
-                    _controlPanel.isVisible = true;
                     ModConfig.Instance.ControlPanelEnabled = true;
+
+                    if (_controlPanelValidToolbarButtonIndex.Contains(_tsContainer.selectedIndex))
+                    {
+                        _controlPanel.isVisible = true;
+                    }
                 }
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:ToggleControlPanel -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:ToggleControlPanel -> Exception: " + e.Message);
             }
         }
 
@@ -395,14 +442,10 @@ namespace ResizeIt
         {
             try
             {
+                float scaling = _expanded ? ModConfig.Instance.ScalingExpanded : ModConfig.Instance.ScalingCompressed;
                 int rows = _expanded ? ModConfig.Instance.RowsExpanded : ModConfig.Instance.RowsCompressed;
                 int columns = _expanded ? ModConfig.Instance.ColumnsExpanded : ModConfig.Instance.ColumnsCompressed;
-                float scaling = _expanded ? ModConfig.Instance.ScalingExpanded : ModConfig.Instance.ScalingCompressed;
                 string spriteName = _expanded ? "buttonresizeexpanded" : "buttonresizecompressed";
-
-                rows = rows == 0 ? 1 : rows;
-                columns = columns == 0 ? 7 : columns;
-                scaling = scaling == 0 ? 100f : scaling;
 
                 _resizeSprite.spriteName = spriteName;
                 _bottomLabel.text = string.Format("{0} x {1} @ {2}%", rows.ToString(), columns.ToString(), (scaling * 100).ToString());
@@ -421,7 +464,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:UpdateControlPanel -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:UpdateControlPanel -> Exception: " + e.Message);
             }
         }
 
@@ -434,7 +477,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:UpdateNumberOfItemsText -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:UpdateNumberOfItemsText -> Exception: " + e.Message);
             }
         }
 
@@ -453,7 +496,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:Toggle -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:Toggle -> Exception: " + e.Message);
             }
         }
 
@@ -461,14 +504,14 @@ namespace ResizeIt
         {
             try
             {
-                float scaling = ModConfig.Instance.ScalingExpanded < 0.5f ? 1f : ModConfig.Instance.ScalingExpanded;
-                int rows = ModConfig.Instance.RowsExpanded > 0 ? ModConfig.Instance.RowsExpanded : 3;
-                int columns = ModConfig.Instance.ColumnsExpanded > 0 ? ModConfig.Instance.ColumnsExpanded : 7;
+                float scaling = ModConfig.Instance.ScalingExpanded;
+                int rows = ModConfig.Instance.RowsExpanded;
+                int columns = ModConfig.Instance.ColumnsExpanded;
                 bool scrollVertically = ModConfig.Instance.ScrollDirectionExpanded is "Vertically" ? true : false;
                 bool alignmentCentered = ModConfig.Instance.AlignmentExpanded is "Centered" ? true : false;
                 float horizontalOffset = ModConfig.Instance.HorizontalOffsetExpanded;
                 float verticalOffset = ModConfig.Instance.VerticalOffsetExpanded;
-                float opacity = ModConfig.Instance.OpacityExpanded > 0f ? ModConfig.Instance.OpacityExpanded : 1f;
+                float opacity = ModConfig.Instance.OpacityExpanded;
 
                 UpdateGUI(scaling, rows, columns, scrollVertically, alignmentCentered, horizontalOffset, verticalOffset, opacity);
 
@@ -478,7 +521,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:Expand -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:Expand -> Exception: " + e.Message);
             }
         }
 
@@ -486,14 +529,14 @@ namespace ResizeIt
         {
             try
             {
-                float scaling = ModConfig.Instance.ScalingCompressed < 0.5f ? 1f : ModConfig.Instance.ScalingCompressed;
-                int rows = ModConfig.Instance.RowsCompressed > 0 ? ModConfig.Instance.RowsCompressed : 1;
-                int columns = ModConfig.Instance.ColumnsCompressed > 0 ? ModConfig.Instance.ColumnsCompressed : 7;
+                float scaling = ModConfig.Instance.ScalingCompressed;
+                int rows = ModConfig.Instance.RowsCompressed;
+                int columns = ModConfig.Instance.ColumnsCompressed;
                 bool scrollVertically = ModConfig.Instance.ScrollDirectionCompressed is "Vertically" ? true : false;
                 bool alignmentCentered = ModConfig.Instance.AlignmentCompressed is "Centered" ? true : false;
                 float horizontalOffset = ModConfig.Instance.HorizontalOffsetCompressed;
                 float verticalOffset = ModConfig.Instance.VerticalOffsetCompressed;
-                float opacity = ModConfig.Instance.OpacityCompressed > 0f ? ModConfig.Instance.OpacityCompressed : 1f;
+                float opacity = ModConfig.Instance.OpacityCompressed;
 
                 UpdateGUI(scaling, rows, columns, scrollVertically, alignmentCentered, horizontalOffset, verticalOffset, opacity);
 
@@ -503,7 +546,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:Compress -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:Compress -> Exception: " + e.Message);
             }
         }
 
@@ -624,7 +667,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:UpdateGUI -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:UpdateGUI -> Exception: " + e.Message);
             }
         }
 
@@ -700,7 +743,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:PatchPloppableRICOMod -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:PatchPloppableRICOMod -> Exception: " + e.Message);
             }
         }
 
@@ -753,7 +796,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ExpandableScrollablePanel:PatchFindItMod -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ResizeManager:PatchFindItMod -> Exception: " + e.Message);
             }
         }
     }
