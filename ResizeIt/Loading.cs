@@ -15,7 +15,7 @@ namespace ResizeIt
             try
             {
                 _resizeManagerGameObject = new GameObject("ResizeItResizeManager");
-                _resizeManagerGameObject.AddComponent<ResizeManager>();
+                _resizeManagerGameObject.AddComponent<ModManager>();
             }
             catch (Exception e)
             {

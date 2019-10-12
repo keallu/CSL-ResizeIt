@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ResizeIt
 {
-    public class ResizeManager : MonoBehaviour
+    public class ModManager : MonoBehaviour
     {
         private bool _initialized;
         private bool _expanded;
@@ -25,7 +25,7 @@ namespace ResizeIt
         private UISprite _downSprite;
         private UILabel _bottomLabel;
 
-        private void Awake()
+        public void Awake()
         {
             try
             {
@@ -36,11 +36,11 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:Awake -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:Awake -> Exception: " + e.Message);
             }
         }
 
-        private void Start()
+        public void Start()
         {
             try
             {
@@ -62,11 +62,11 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:Start -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:Start -> Exception: " + e.Message);
             }
         }
 
-        private void Update()
+        public void Update()
         {
             try
             {
@@ -110,11 +110,11 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:Update -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:Update -> Exception: " + e.Message);
             }
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             try
             {
@@ -157,7 +157,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:OnDestroy -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:OnDestroy -> Exception: " + e.Message);
             }
         }
 
@@ -185,7 +185,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:LoadResources -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:LoadResources -> Exception: " + e.Message);
                 return null;
             }
         }
@@ -229,11 +229,21 @@ namespace ResizeIt
                 };
                 _resizeSprite.eventMouseEnter += (component, eventParam) =>
                 {
-                    OnButtonEnter(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonEnter(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
                 _resizeSprite.eventMouseLeave += (component, eventParam) =>
                 {
-                    OnButtonLeave(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonLeave(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
 
                 _leftSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelLeftSprite");
@@ -247,17 +257,28 @@ namespace ResizeIt
                     if (!eventParam.used)
                     {
                         AddOrRemoveRowsOrColumns(0, -1);
+                        ModConfig.Instance.Save();
 
                         eventParam.Use();
                     }
                 };
                 _leftSprite.eventMouseEnter += (component, eventParam) =>
                 {
-                    OnButtonEnter(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonEnter(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
                 _leftSprite.eventMouseLeave += (component, eventParam) =>
                 {
-                    OnButtonLeave(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonLeave(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
 
                 _rightSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelRightSprite");
@@ -271,17 +292,28 @@ namespace ResizeIt
                     if (!eventParam.used)
                     {
                         AddOrRemoveRowsOrColumns(0, 1);
+                        ModConfig.Instance.Save();
 
                         eventParam.Use();
                     }
                 };
                 _rightSprite.eventMouseEnter += (component, eventParam) =>
                 {
-                    OnButtonEnter(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonEnter(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
                 _rightSprite.eventMouseLeave += (component, eventParam) =>
                 {
-                    OnButtonLeave(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonLeave(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
 
                 _upSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelUpSprite");
@@ -295,17 +327,28 @@ namespace ResizeIt
                     if (!eventParam.used)
                     {
                         AddOrRemoveRowsOrColumns(1, 0);
+                        ModConfig.Instance.Save();
 
                         eventParam.Use();
                     }
                 };
                 _upSprite.eventMouseEnter += (component, eventParam) =>
                 {
-                    OnButtonEnter(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonEnter(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
                 _upSprite.eventMouseLeave += (component, eventParam) =>
                 {
-                    OnButtonLeave(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonLeave(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
 
                 _downSprite = UIUtils.CreateSprite(_controlPanel, "ResizeItControlPanelDownSprite");
@@ -319,17 +362,28 @@ namespace ResizeIt
                     if (!eventParam.used)
                     {
                         AddOrRemoveRowsOrColumns(-1, 0);
+                        ModConfig.Instance.Save();
 
                         eventParam.Use();
                     }
                 };
                 _downSprite.eventMouseEnter += (component, eventParam) =>
                 {
-                    OnButtonEnter(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonEnter(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
                 _downSprite.eventMouseLeave += (component, eventParam) =>
                 {
-                    OnButtonLeave(component, eventParam);
+                    if (!eventParam.used)
+                    {
+                        OnButtonLeave(component, eventParam);
+
+                        eventParam.Use();
+                    }
                 };
 
                 _bottomLabel = UIUtils.CreateLabel(_controlPanel, "ResizeItControlPanelBottomLabel", "0 x 0 @ 0%");
@@ -371,7 +425,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:CreateControlPanel -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:CreateControlPanel -> Exception: " + e.Message);
             }
         }
 
@@ -394,7 +448,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:AddOrRemoveRowsOrColumns -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:AddOrRemoveRowsOrColumns -> Exception: " + e.Message);
             }
         }
 
@@ -434,7 +488,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:ToggleControlPanel -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:ToggleControlPanel -> Exception: " + e.Message);
             }
         }
 
@@ -464,7 +518,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:UpdateControlPanel -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:UpdateControlPanel -> Exception: " + e.Message);
             }
         }
 
@@ -477,7 +531,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:UpdateNumberOfItemsText -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:UpdateNumberOfItemsText -> Exception: " + e.Message);
             }
         }
 
@@ -496,7 +550,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:Toggle -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:Toggle -> Exception: " + e.Message);
             }
         }
 
@@ -521,7 +575,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:Expand -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:Expand -> Exception: " + e.Message);
             }
         }
 
@@ -546,7 +600,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:Compress -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:Compress -> Exception: " + e.Message);
             }
         }
 
@@ -640,13 +694,11 @@ namespace ResizeIt
                                         if (scrollbar.decrementButton != null)
                                         {
                                             scrollbar.decrementButton.relativePosition = new Vector3(scrollbar.decrementButton.relativePosition.x, scrollbar.height / 2f - 16f);
-                                            scrollbar.decrementButton.isInteractive = false;
                                         }
 
                                         if (scrollbar.incrementButton != null)
                                         {
                                             scrollbar.incrementButton.relativePosition = new Vector3(scrollbar.incrementButton.relativePosition.x, scrollbar.height / 2f - 16f);
-                                            scrollbar.incrementButton.isInteractive = false;
                                         }
                                     }
                                 }
@@ -667,7 +719,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:UpdateGUI -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:UpdateGUI -> Exception: " + e.Message);
             }
         }
 
@@ -743,7 +795,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:PatchPloppableRICOMod -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:PatchPloppableRICOMod -> Exception: " + e.Message);
             }
         }
 
@@ -796,7 +848,7 @@ namespace ResizeIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Resize It!] ResizeManager:PatchFindItMod -> Exception: " + e.Message);
+                Debug.Log("[Resize It!] ModManager:PatchFindItMod -> Exception: " + e.Message);
             }
         }
     }
