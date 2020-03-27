@@ -1,5 +1,4 @@
-﻿using ColossalFramework.UI;
-using ICities;
+﻿using ICities;
 using System;
 using UnityEngine;
 
@@ -14,7 +13,7 @@ namespace ResizeIt
         {
             try
             {
-                _resizeManagerGameObject = new GameObject("ResizeItResizeManager");
+                _resizeManagerGameObject = new GameObject("ResizeItModManager");
                 _resizeManagerGameObject.AddComponent<ModManager>();
             }
             catch (Exception e)
