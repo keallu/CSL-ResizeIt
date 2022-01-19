@@ -8,10 +8,8 @@
         public bool SafeModeEnabled { get; set; } = false;
         public bool FastSwitchingEnabled { get; set; } = true;
         public bool ControlPanelEnabled { get; set; } = true;
-        public string ControlPanelAlignment { get; set; } = "Left";
         public float ControlPanelOpacity { get; set; } = 1f;
         public bool ControlPanelFastSwitchingEnabled { get; set; } = true;
-        public float ScalingExpanded { get; set; } = 1f;
         public int RowsExpanded { get; set; } = 3;
         public int ColumnsExpanded { get; set; } = 7;
         public string ScrollDirectionExpanded { get; set; } = "Vertically";
@@ -19,7 +17,6 @@
         public float HorizontalOffsetExpanded { get; set; } = 0f;
         public float VerticalOffsetExpanded { get; set; } = 0f;
         public float OpacityExpanded { get; set; } = 1f;
-        public float ScalingCompressed { get; set; } = 1f;
         public int RowsCompressed { get; set; } = 1;
         public int ColumnsCompressed { get; set; } = 7;
         public string ScrollDirectionCompressed { get; set; } = "Horizontally";

@@ -67,7 +67,6 @@ namespace ResizeIt
             group = helper.AddGroup(Name);
 
             selectedIndex = GetSelectedOptionIndex(DefaultModeValues, ModConfig.Instance.DefaultMode);
-
             group.AddDropdown("Default mode", DefaultModeLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.DefaultMode = DefaultModeValues[sel];
@@ -75,7 +74,6 @@ namespace ResizeIt
             });
 
             selected = ModConfig.Instance.SafeModeEnabled;
-
             group.AddCheckbox("Safe mode enabled", selected, sel =>
             {
                 ModConfig.Instance.SafeModeEnabled = sel;
@@ -83,7 +81,6 @@ namespace ResizeIt
             });
 
             selected = ModConfig.Instance.FastSwitchingEnabled;
-
             group.AddCheckbox("Mode fast switching enabled (LEFT CTRL + SPACE)", selected, sel =>
             {
                 ModConfig.Instance.FastSwitchingEnabled = sel;
@@ -93,23 +90,13 @@ namespace ResizeIt
             group = helper.AddGroup("Control panel");
 
             selected = ModConfig.Instance.ControlPanelEnabled;
-
             group.AddCheckbox("Enabled", selected, sel =>
             {
                 ModConfig.Instance.ControlPanelEnabled = sel;
                 ModConfig.Instance.Save();
             });
 
-            selectedIndex = GetSelectedOptionIndex(ControlPanelAlignmentValues, ModConfig.Instance.ControlPanelAlignment);
-
-            group.AddDropdown("Alignment", ControlPanelAlignmentLabels, selectedIndex, sel =>
-            {
-                ModConfig.Instance.ControlPanelAlignment = ControlPanelAlignmentValues[sel];
-                ModConfig.Instance.Save();
-            });
-
             selectedValue = ModConfig.Instance.ControlPanelOpacity;
-
             group.AddSlider("Opacity", 0.05f, 1f, 0.05f, selectedValue, sel =>
             {
                 ModConfig.Instance.ControlPanelOpacity = sel;
@@ -117,7 +104,6 @@ namespace ResizeIt
             });
 
             selected = ModConfig.Instance.ControlPanelFastSwitchingEnabled;
-
             group.AddCheckbox("On/off fast switching enabled (LEFT ALT + SPACE)", selected, sel =>
             {
                 ModConfig.Instance.ControlPanelFastSwitchingEnabled = sel;
@@ -126,16 +112,7 @@ namespace ResizeIt
 
             group = helper.AddGroup("Expanded mode");
 
-            selectedValue = ModConfig.Instance.ScalingExpanded;
-
-            group.AddSlider("Scaling", 0.5f, 1f, 0.05f, selectedValue, sel =>
-            {
-                ModConfig.Instance.ScalingExpanded = sel;
-                ModConfig.Instance.Save();
-            });
-
             selectedIndex = GetSelectedOptionIndex(ScrollDirectionValues, ModConfig.Instance.ScrollDirectionExpanded);
-
             group.AddDropdown("Scroll direction", ScrollDirectionLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.ScrollDirectionExpanded = ScrollDirectionValues[sel];
@@ -143,7 +120,6 @@ namespace ResizeIt
             });
 
             selectedIndex = GetSelectedOptionIndex(AlignmentValues, ModConfig.Instance.AlignmentExpanded);
-
             group.AddDropdown("Alignment", AlignmentLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.AlignmentExpanded = AlignmentValues[sel];
@@ -151,7 +127,6 @@ namespace ResizeIt
             });
 
             selectedValue = ModConfig.Instance.HorizontalOffsetExpanded;
-
             group.AddTextfield("Horizontal offset", selectedValue.ToString(), sel =>
             {
                 float.TryParse(sel, out result);
@@ -160,7 +135,6 @@ namespace ResizeIt
             });
 
             selectedValue = ModConfig.Instance.VerticalOffsetExpanded;
-
             group.AddTextfield("Vertical offset", selectedValue.ToString(), sel =>
             {
                 float.TryParse(sel, out result);
@@ -169,25 +143,13 @@ namespace ResizeIt
             });
 
             selectedValue = ModConfig.Instance.OpacityExpanded;
-
             group.AddSlider("Opacity", 0.05f, 1f, 0.05f, selectedValue, sel =>
             {
                 ModConfig.Instance.OpacityExpanded = sel;
                 ModConfig.Instance.Save();
             });
 
-            group = helper.AddGroup("Compressed mode");
-
-            selectedValue = ModConfig.Instance.ScalingCompressed;
-
-            group.AddSlider("Scaling", 0.5f, 1f, 0.05f, selectedValue, sel =>
-            {
-                ModConfig.Instance.ScalingCompressed = sel;
-                ModConfig.Instance.Save();
-            });
-
             selectedIndex = GetSelectedOptionIndex(ScrollDirectionValues, ModConfig.Instance.ScrollDirectionCompressed);
-
             group.AddDropdown("Scroll direction", ScrollDirectionLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.ScrollDirectionCompressed = ScrollDirectionValues[sel];
@@ -195,7 +157,6 @@ namespace ResizeIt
             });
 
             selectedIndex = GetSelectedOptionIndex(AlignmentValues, ModConfig.Instance.AlignmentCompressed);
-
             group.AddDropdown("Alignment", AlignmentLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.AlignmentCompressed = AlignmentValues[sel];
@@ -203,7 +164,6 @@ namespace ResizeIt
             });
 
             selectedValue = ModConfig.Instance.HorizontalOffsetCompressed;
-
             group.AddTextfield("Horizontal offset", selectedValue.ToString(), sel =>
             {
                 float.TryParse(sel, out result);
@@ -212,7 +172,6 @@ namespace ResizeIt
             });
 
             selectedValue = ModConfig.Instance.VerticalOffsetCompressed;
-
             group.AddTextfield("Vertical offset", selectedValue.ToString(), sel =>
             {
                 float.TryParse(sel, out result);
@@ -221,7 +180,6 @@ namespace ResizeIt
             });
 
             selectedValue = ModConfig.Instance.OpacityCompressed;
-
             group.AddSlider("Opacity", 0.05f, 1f, 0.05f, selectedValue, sel =>
             {
                 ModConfig.Instance.OpacityCompressed = sel;
