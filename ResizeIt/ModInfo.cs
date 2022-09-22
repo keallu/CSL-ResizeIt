@@ -1,5 +1,6 @@
 ﻿using ICities;
 using System;
+using System.Reflection;
 
 namespace ResizeIt
 {
@@ -18,18 +19,6 @@ namespace ResizeIt
         {
             "Expanded mode",
             "Compressed mode"
-        };
-
-        private static readonly string[] ControlPanelAlignmentLabels =
-        {
-            "Right",
-            "Left"
-        };
-
-        private static readonly string[] ControlPanelAlignmentValues =
-        {
-            "Right",
-            "Left"
         };
 
         private static readonly string[] ScrollDirectionLabels =
@@ -59,12 +48,15 @@ namespace ResizeIt
         public void OnSettingsUI(UIHelperBase helper)
         {
             UIHelperBase group;
+
+            AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
+
+            group = helper.AddGroup(Name + " - " + assemblyName.Version.Major + "." + assemblyName.Version.Minor);
+
             bool selected;
             int selectedIndex;
             float selectedValue;
             float result;
-
-            group = helper.AddGroup(Name);
 
             selectedIndex = GetSelectedOptionIndex(DefaultModeValues, ModConfig.Instance.DefaultMode);
             group.AddDropdown("Default mode", DefaultModeLabels, selectedIndex, sel =>
